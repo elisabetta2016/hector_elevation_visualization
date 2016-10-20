@@ -23,6 +23,8 @@
 
 #include <nav_msgs/OccupancyGrid.h>
 
+#include <pc_maker/CloudMetaData.h>
+
 class ElevationVisualization{
 
 public:
@@ -37,6 +39,7 @@ public:
     * \param [in] config contains current parameters
     * \param [in] level is unused
     */
+
     void dynRecParamCallback(hector_elevation_visualization::ElevationVisualizationConfig &config, uint32_t level);
 
     /// sysMessageCallback This function listen to system messages
@@ -49,6 +52,7 @@ public:
     /**
     * \param [in] elevation_map_msg stores elevation map data as a 2.5D grid
     */
+    void CloudMetaData_cb(const pc_maker::CloudMetaData::Ptr msg);
     void map_callback(const hector_elevation_msgs::ElevationGrid& elevation_map);
 
 private:
@@ -57,6 +61,8 @@ private:
 
     ros::Subscriber sub_elevation_map;
     ros::Subscriber sub_sys_message_callback;
+    ros::Subscriber sub_CloudMetaData; 
+
     ros::Publisher map_marker_array_publisher;
     ros::Publisher Map_publisher;
 
