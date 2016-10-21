@@ -25,6 +25,8 @@
 
 #include <pc_maker/CloudMetaData.h>
 
+#include <hector_elevation_visualization/EcostmapMetaData.h>
+
 class ElevationVisualization{
 
 public:
@@ -65,6 +67,7 @@ private:
 
     ros::Publisher map_marker_array_publisher;
     ros::Publisher Map_publisher;
+    ros::Publisher EcostmapMeta_publisher;
 
     dynamic_reconfigure::Server<hector_elevation_visualization::ElevationVisualizationConfig> dyn_rec_server_;
 
@@ -109,5 +112,6 @@ protected:
     unsigned int cell_elevation_y;
     std::string elevation_topic_name;
     nav_msgs::OccupancyGrid elev_map;
+    hector_elevation_visualization::EcostmapMetaData ecostmap_meta;
 
 };

@@ -63,6 +63,7 @@ ElevationVisualization::ElevationVisualization(ros::NodeHandle& nHandle)
     map_marker_array_publisher = nHandle.advertise<visualization_msgs::MarkerArray>("elevation_map_marker_array", 1,true);
 
     Map_publisher = nHandle.advertise<nav_msgs::OccupancyGrid>("/elevation_costmap", 1,true);
+    EcostmapMeta_publisher = nHandle.advertise<hector_elevation_visualization::EcostmapMetaData>("/elevation_costmap_MetaData", 1);
 
     sub_elevation_map = nHandle.subscribe(elevation_map_frame_id,1,&ElevationVisualization::map_callback,this);
     sub_sys_message_callback = nHandle.subscribe(sys_msg_topic,1,&ElevationVisualization::sys_message_callback,this);
@@ -98,6 +99,7 @@ void ElevationVisualization::dynRecParamCallback(hector_elevation_visualization:
 
 void ElevationVisualization::visualize_map(const hector_elevation_msgs::ElevationGrid& elevation_map, tf::StampedTransform local_map_transform)
 {
+    
     int current_height_level;
     double elevation_cost;
     double height_max = 0.5;
@@ -107,12 +109,26 @@ void ElevationVisualization::visualize_map(const hector_elevation_msgs::Elevatio
     // Updating OccupancyGrid MetaData
     elev_map.info.width = cell_elevation_x;
     elev_map.info.height = cell_elevation_y;
+
     elev_map.info.origin.position.x = origin_x;
     elev_map.info.origin.position.y = origin_y;
+
+    // EcostmapMetaData msg
+    ecostmap_meta.elevation_min = elevation_map.info.min_elevation;
+    ecostmap_meta.elevation_max = elevation_map.info.max_elevation;
+    ecostmap_meta.cost_resolution = 254.00/(ecostmap_meta.elevation_max - ecostmap_meta.elevation_min);
+    ecostmap_meta.zero_elevation_cost = fabs(ecostmap_meta.elevation_min*ecostmap_meta.cost_resolution);
+    ecostmap_meta.origin_x = origin_x;
+    ecostmap_meta.origin_y = origin_y; 
+    ecostmap_meta.x_size = costmap_x_size;
+    ecostmap_meta.y_size = costmap_y_size;
+
 
     int x_offset = 10; //Distance between laser and base_link
     int8_t map_cost;
    
+    
+
     if (fabs(costmap_x_size - costmap_y_size)>0.001)
     {
         ROS_ERROR("The Point Cloud has to have square bounds in x-y plane, Message is Skipped");
@@ -174,6 +190,7 @@ void ElevationVisualization::visualize_map(const hector_elevation_msgs::Elevatio
     elev_map.header.stamp = ros::Time::now();
 	elev_map.header.frame_id = std::string("/base_link");
 	Map_publisher.publish(elev_map);
+    EcostmapMeta_publisher.publish(ecostmap_meta);
 
 }
 void ElevationVisualization::CloudMetaData_cb(const pc_maker::CloudMetaData::Ptr msg)

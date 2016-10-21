@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   visualization_msgs
   costmap_2d
+  message_generation
 )
 generate_dynamic_reconfigure_options(cfg/ElevationVisualization.cfg)
 
@@ -52,11 +53,11 @@ add_definitions(${EIGEN_DEFINITIONS})
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  DIRECTORY msg
+  FILES
+  EcostmapMetaData.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -73,10 +74,10 @@ add_definitions(${EIGEN_DEFINITIONS})
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   hector_elevation_msgs#   visualization_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ###################################
 ## catkin specific configuration ##
