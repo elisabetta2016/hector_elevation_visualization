@@ -91,7 +91,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES hector_elevation_visualization
-  CATKIN_DEPENDS dynamic_reconfigure hector_elevation_msgs hector_map_tools roscpp tf visualization_msgs message_runtime
+  CATKIN_DEPENDS dynamic_reconfigure hector_elevation_msgs hector_map_tools roscpp tf visualization_msgs
   DEPENDS system_lib eigen
 )
 
